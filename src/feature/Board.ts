@@ -1,23 +1,29 @@
 import { Square } from './Square.ts';
 
 /**
- * Represents a game board with a 2D grid of squares.
- * The board can be dynamically resized by adding or removing rows and columns.
+ * Represents a game board consisting of a 2D array of Square objects.
+ * The board can be dynamically resized within specified maximum dimensions.
  * 
  * @remarks
- * The board is implemented as a 2D array of Square objects, where each Square
- * represents a cell in the game grid. The board dimensions can be modified
- * through methods that add or remove rows and columns.
+ * The board is implemented as a rectangular grid where each cell is a Square object.
+ * The dimensions of the board can be modified through methods to add or remove rows and columns.
+ * The board maintains maximum dimensions of 10x10 squares.
  * 
  * @example
  * ```typescript
- * const board = new GameBoard(3, 3); // Creates a 3x3 board
+ * const board = new GameBoard(5, 5);
  * board.addRow(); // Adds a row at the top
  * board.addCol(); // Adds a column at the right
  * ```
+ * 
+ * @property squares - 2D array containing Square objects that make up the game board
+ * @property maxRows - Maximum number of rows allowed on the board (10)
+ * @property maxCols - Maximum number of columns allowed on the board (10)
  */
 export class GameBoard {
   squares: Square[][]
+  private maxRows = 10;
+  private maxCols = 10;
 
   /**
    * Creates a new board with the specified dimensions.
@@ -37,6 +43,10 @@ export class GameBoard {
    * @returns void
    */
   addRow(): void{
+    if (this.squares.length >= this.maxRows) {
+      return
+    }
+
     this.squares.unshift(Array.from({ length: this.squares[0].length }, () => new Square()));
   }
 
@@ -50,6 +60,10 @@ export class GameBoard {
    * @returns void
    */
   addCol(): void{
+    if (this.squares[0].length >= this.maxCols) {
+      return;
+    }
+
     for (const row of this.squares) {
       row.push(new Square());
     }
