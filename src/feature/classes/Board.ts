@@ -36,6 +36,22 @@ export class GameBoard {
   }
 
   /**
+   * Creates and returns a deep copy of the current GameBoard instance.
+   * Each square in the board is copied to a new GameBoard object.
+   * 
+   * @returns {GameBoard} A new GameBoard instance with the same dimensions and square values
+   */
+  copy(): GameBoard {
+    const newBoard = new GameBoard(this.squares.length, this.squares[0].length);
+    for (let i = 0; i < this.squares.length; i++) {
+      for (let j = 0; j < this.squares[i].length; j++) {
+        newBoard.squares[i][j] = this.squares[i][j];
+      }
+    }
+    return newBoard;
+  }
+
+  /**
    * Adds a new row at the top of the board.
    * Creates a new array of Square objects with the same length as existing rows
    * and adds it to the beginning of the squares array.

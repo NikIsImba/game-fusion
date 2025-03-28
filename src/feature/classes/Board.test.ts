@@ -10,6 +10,15 @@ describe('GameBoard', () => {
     expect(board.squares.every(row => row.length === 4)).toBe(true);
   });
 
+  it('should create deep copy of board', () => {
+    const board = new GameBoard(2, 2);
+    const copy = board.copy();
+    expect(copy).toBeInstanceOf(GameBoard);
+    expect(copy.squares.length).toBe(board.squares.length);
+    expect(copy.squares[0].length).toBe(board.squares[0].length);
+    expect(copy.squares[0][0]).toBe(board.squares[0][0]); // Tests reference copy
+  });
+
   it('should add row correctly', () => {
     const board = new GameBoard(2, 2);
     const initialRows = board.squares.length;
@@ -73,4 +82,6 @@ describe('GameBoard', () => {
     const columnLengths = board.squares.map(row => row.length);
     expect(new Set(columnLengths).size).toBe(1);
   });
+
+
 });
