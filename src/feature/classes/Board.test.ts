@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { GameBoard } from './Board.ts';
-import { Square } from './Square.ts';
+import { Square, SquareColor } from './Square.ts';
 
 describe('GameBoard', () => {
   it('should create board with correct dimensions', () => {
@@ -12,11 +12,16 @@ describe('GameBoard', () => {
 
   it('should create deep copy of board', () => {
     const board = new GameBoard(2, 2);
+    board.squares[0][0].color = SquareColor.Red;
+    board.squares[1][1].color = SquareColor.Red;
     const copy = board.copy();
     expect(copy).toBeInstanceOf(GameBoard);
     expect(copy.squares.length).toBe(board.squares.length);
     expect(copy.squares[0].length).toBe(board.squares[0].length);
-    expect(copy.squares[0][0]).toBe(board.squares[0][0]); // Tests reference copy
+    expect(copy.squares[0][0]).not.toBe(board.squares[0][0]);
+    expect(copy.squares[0][0].color).toBe(SquareColor.Red);
+    expect(copy.squares[1][1]).not.toBe(board.squares[1][1]);
+    expect(copy.squares[1][1].color).toBe(SquareColor.Red);
   });
 
   it('should add row correctly', () => {
@@ -83,5 +88,12 @@ describe('GameBoard', () => {
     expect(new Set(columnLengths).size).toBe(1);
   });
 
+  it('should not go below 1 row or column', () => {
+    const board = new GameBoard(1, 1);
+    board.removeRow();
+    board.removeCol();
+    expect(board.squares.length).toBe(1);
+    expect(board.squares[0].length).toBe(1);
+  });
 
 });

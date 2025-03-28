@@ -45,7 +45,7 @@ export class GameBoard {
     const newBoard = new GameBoard(this.squares.length, this.squares[0].length);
     for (let i = 0; i < this.squares.length; i++) {
       for (let j = 0; j < this.squares[i].length; j++) {
-        newBoard.squares[i][j] = this.squares[i][j];
+        newBoard.squares[i][j] = this.squares[i][j].clone();
       }
     }
     return newBoard;
@@ -88,20 +88,30 @@ export class GameBoard {
   /**
    * Removes the first row from the board by shifting the squares array.
    * This operation modifies the board state by removing the topmost row.
+   * The minimum number of rows is 1, so this method will not remove the last row if it is the only one left.
    * 
    * @returns void
    */
   removeRow(): void{
+    if (this.squares.length <= 1) {
+      return;
+    }
+
     this.squares.shift();
   }
 
   /**
    * Removes the last column from the board by removing the last element from each row.
-   * This method modifies the board state directly.
+   * This method modifies the board state directly. The last column of squares is removed.
+   * The minimum number of columns is 1, so this method will not remove the last column if it is the only one left.
    * 
    * @returns void
    */
   removeCol(): void{
+    if (this.squares[0].length <= 1) {
+      return;
+    }
+
     for (const row of this.squares) {
       row.pop();
     }

@@ -22,4 +22,12 @@ describe('Square', () => {
     square.color = SquareColor.None;
     expect(square.color).toBe(SquareColor.None);
   });
+
+  test('clone should create a new Square with the same color', () => {
+    square.color = SquareColor.Red;
+    const clonedSquare = square.clone();
+    expect(clonedSquare).toBeInstanceOf(Square);
+    expect(clonedSquare.color).toBe(SquareColor.Red);
+    expect(clonedSquare).not.toBe(square);
+  });
 });
