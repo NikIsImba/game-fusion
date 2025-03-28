@@ -4,13 +4,13 @@ import { GameProvider, useGameContext } from './feature/GameContext.tsx';
 import { motion } from 'framer-motion';
 
 function GameGrid() {
-	const { board, forceUpdate } = useGameContext();
+	const { board, setBoard } = useGameContext();
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			switch (e.key) {
 				case 'ArrowUp':
-					board.addRow(); // Mutate the existing board
+					board.addRow();
 					break;
 				case 'ArrowDown':
 					board.removeRow();
@@ -24,9 +24,10 @@ function GameGrid() {
 				default:
 					return;
 			}
-			forceUpdate(); // Trigger a rerender
+
+			setBoard(board.copy()); // Create a copy of the board to trigger rerender
 		},
-		[board, forceUpdate],
+		[board, setBoard],
 	);
 
 	useEffect(() => {
