@@ -22,6 +22,9 @@
 			"all": true,
 			"suspicious": {
 				"noReactSpecificProps": "off"
+			},
+			"nursery": {
+				"useSortedClasses": "error"
 			}
 		}
 	},
