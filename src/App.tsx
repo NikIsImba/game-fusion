@@ -1,42 +1,32 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Square } from './components/Square.tsx';
+import { GameProvider, useGameContext } from './feature/GameContext.tsx';
+import { motion } from 'framer-motion';
 
-export function App() {
-	//coordinate system of sqaures
-	// 0,0 0,1 0,2
-	// 1,0 1,1 1,2
-	// 2,0 2,1 2,2
-
-	const [Squares, setSquares] = useState([
-		[0, 0, 0],
-		[0, 0, 0],
-		[0, 0, 0],
-	]);
-
-	// if button up or down is pressed add a row to the Squares at the top or bottom
-	// if button left or right is pressed add a column to the Squares at the left or right
+function GameGrid() {
+	const { board, forceUpdate } = useGameContext();
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
-			console.log(e.key);
 			switch (e.key) {
 				case 'ArrowUp':
-					setSquares((prev) => [[0, 0, 0], ...prev]);
+					board.addRow(); // Mutate the existing board
 					break;
 				case 'ArrowDown':
-					setSquares((prev) => [...prev, [0, 0, 0]]);
+					board.removeRow();
 					break;
 				case 'ArrowLeft':
-					setSquares((prev) => prev.map((row) => [0, ...row]));
+					board.addCol();
 					break;
 				case 'ArrowRight':
-					setSquares((prev) => prev.map((row) => [...row, 0]));
+					board.removeCol();
 					break;
 				default:
-					break;
+					return;
 			}
+			forceUpdate(); // Trigger a rerender
 		},
-		[Squares],
+		[board, forceUpdate],
 	);
 
 	useEffect(() => {
@@ -46,26 +36,36 @@ export function App() {
 	}, [handleKeyDown]);
 
 	return (
-		<div className="flex min-h-screen flex-col bg-gray-900">
-			<div className="flex w-full flex-row items-center justify-center rounded-b-2xl bg-blue-200 p-4">
-				<Square />
-				<Square />
-				<Square />
-			</div>
-			<div className="flex flex-1 flex-col items-center justify-center bg-gray-900">
-				<div className="flex flex-row items-center justify-center rounded-2xl bg-yellow-50 p-4">
-					{Squares.map((row, rowIndex) => (
-						<div
-							key={`row-${row.join('-')}-${rowIndex}`}
-							className="flex flex-col items-center"
-						>
-							{row.map((square, squareIndex) => (
-								<Square key={`square-${square}-${rowIndex}-${squareIndex}`} />
-							))}
-						</div>
-					))}
+		<motion.div layout>
+			<div className="flex min-h-screen flex-col bg-gray-900">
+				<div className="flex w-full flex-row items-center justify-center rounded-b-2xl bg-blue-200 p-4">
+					<Square />
+					<Square />
+					<Square />
+				</div>
+				<div className="flex flex-1 flex-col items-center justify-center bg-gray-900">
+					<div className="flex flex-row items-center justify-center rounded-2xl bg-yellow-50 p-4">
+						{board.squares.map((row, rowIndex) => (
+							<div
+								key={`row-${rowIndex}`}
+								className="flex flex-col items-center"
+							>
+								{row.map((square, squareIndex) => (
+									<Square key={`square-${rowIndex}-${squareIndex}`} />
+								))}
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
-		</div>
+		</motion.div>
+	);
+}
+
+export function App() {
+	return (
+		<GameProvider>
+			<GameGrid />
+		</GameProvider>
 	);
 }
